@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wingo Prediction Lab</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header><div><h1>Wingo Prediction Lab</h1><p>Automatic snapshot collector & history analyzer</p></div><span id="status">Waiting for site data</span></header>
+<main>
+<section class="panel settings"><h2>Live collector settings</h2>
+<label>Game <select id="gameCode"><option value="WinGo_1M">WinGo 1M</option><option value="WinGo_30S">WinGo 30S</option></select></label>
+<label>Firebase Realtime Database URL <input id="databaseUrl" type="url" placeholder="https://YOUR-DB.firebasedatabase.app"></label>
+<p class="muted">Firebase Authentication → Sign-in method → Anonymous must be enabled. Use the exact database URL from Firebase Console.</p>
+<div class="line"><label><input type="checkbox" id="autoEnabled"> Auto-fetch every 30 seconds</label><button id="saveSettings">Save settings</button></div>
+<div id="firebaseStatus" class="muted">Firebase not configured</div></section>
+<section class="metrics">
+<div class="metric"><small>Captured responses</small><strong id="total">0</strong></div>
+<div class="metric"><small>Latest snapshot</small><strong id="snap">—</strong></div>
+<div class="metric"><small>History records</small><strong id="historyCount">0</strong></div>
+</section>
+<section class="panel">
+<div class="line"><h2>Live Energy Panel</h2><div><button id="fetchLive">Fetch signed API</button> <button id="refresh">Refresh</button></div></div><p class="muted">Runs a signed read-only Energy/GetPanel request. Successful snapshots are deduplicated, stored locally and synced to Firebase when configured.</p>
+<div id="snapshot" class="muted">Open the Wingo page in another tab and keep it open. The extension records matching responses from that page.</div>
+<div id="numbers" class="numbers"></div>
+</section>
+<section class="panel">
+<div class="line"><h2>History & pattern summary</h2><button id="export">Export JSON</button></div>
+<div id="analysis" class="muted">Waiting for history responses…</div>
+<div class="tablewrap"><table><thead><tr><th>Issue</th><th>Number</th><th>Size</th><th>Color</th><th>Time</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<section class="panel note">
+<h2>Important</h2>
+<p>This tool reports observed data and descriptive frequencies. It cannot reliably predict random lottery outcomes or guarantee profit. It does not place bets or send betting requests.</p>
+<p>The extension stores captures locally and syncs them to Firebase when a database URL and anonymous sign-in are configured. Keep Chrome open for continuous polling.</p>
+<button id="clear" class="danger">Clear local captured data</button>
+</section>
+</main>
+<script src="popup.js"></script>
+</body></html>

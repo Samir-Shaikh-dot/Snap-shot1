@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10172a">
+  <meta name="description" content="Wingo Prediction Lab: snapshot data viewer and historical pattern analysis dashboard.">
+  <title>Wingo Prediction Lab</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-icon">W</span><span><b>Wingo Prediction Lab</b><small>Snapshot Monitor · History Analytics</small></span></a>
+    <div class="header-actions"><span id="connectionPill" class="pill neutral">Demo mode</span><button id="themeToggle" class="icon-button" title="Toggle theme" aria-label="Toggle theme">☼</button></div>
+  </header>
+  <main class="container">
+
+    <section class="panel" id="firebasePanel">
+      <div class="line"><h2>Firebase live data backup</h2><span id="firebaseStatus" class="muted">Not connected</span></div>
+      <p class="muted compact">Paste the Realtime Database URL from Firebase Console (not the API key). Data syncs to the database path <code>/wingoLab/records.json</code>. Your database rules must permit the intended read/write access.</p>
+      <div class="toolbar-left" style="gap:8px;flex-wrap:wrap"><input id="firebaseUrl" type="url" placeholder="https://YOUR-DATABASE-URL.firebasedatabase.app" style="min-width:260px;flex:1;padding:10px;border-radius:8px"><button id="saveFirebaseUrl" class="button secondary">Save database URL</button><button id="firebaseLoad" class="button secondary">Load cloud data</button><button id="firebasePush" class="button">Save to Firebase</button></div>
+    </section>
+    <section class="hero">
+      <div><p class="eyebrow">DATA DASHBOARD</p><h1>Observe the data.<br><span>Understand the history.</span></h1><p class="hero-copy">Monitor captured Energy Panel snapshots and historical results. Live collection runs in the Chrome extension; this dashboard describes observed data and cannot guarantee future lottery outcomes.</p></div>
+      <div class="hero-orb" aria-hidden="true"><div class="orb-ring"></div><div class="orb-center">W</div><span class="orb-dot d1"></span><span class="orb-dot d2"></span><span class="orb-dot d3"></span></div>
+    </section>
+    <section class="toolbar panel">
+      <div class="toolbar-left"><label class="file-button">Import JSON <input id="importFile" type="file" accept=".json,application/json"></label><button id="exportData" class="button secondary">Export data</button></div>
+      <div class="toolbar-right"><label class="select-label">Game <select id="gameSelect"><option value="WinGo_1M">WinGo 1M</option><option value="WinGo_30S">WinGo 30S</option><option value="all">All imported data</option></select></label><button id="clearData" class="button danger">Clear</button></div>
+    </section>
+    <section class="metric-grid">
+      <article class="metric panel"><div class="metric-head"><span>History records</span><span class="metric-icon">▤</span></div><strong id="metricHistory">0</strong><small>Recognized result rows</small></article>
+      <article class="metric panel"><div class="metric-head"><span>Snapshots</span><span class="metric-icon">◉</span></div><strong id="metricSnapshots">0</strong><small>Imported Energy Panel captures</small></article>
+      <article class="metric panel"><div class="metric-head"><span>Latest issue</span><span class="metric-icon">⌁</span></div><strong id="metricIssue">—</strong><small id="metricPhase">No phase data</small></article>
+      <article class="metric panel"><div class="metric-head"><span>Most frequent</span><span class="metric-icon">↗</span></div><strong id="metricTop">—</strong><small id="metricTopSub">Not enough data</small></article>
+    </section>
+    <section class="two-col">
+      <article class="panel">
+        <div class="section-heading"><div><p class="eyebrow">LATEST CAPTURE</p><h2>Energy Panel Snapshot</h2></div><span id="snapshotTime" class="subtle">No snapshot loaded</span></div>
+        <div id="snapshotSummary" class="empty-state">No live snapshot yet. Install the Chrome collector and connect it to the Wingo page.</div>
+        <div id="snapshotNumbers" class="snapshot-grid"></div>
+        <p class="footnote">The panel's percentage/rank fields are displayed as supplied. They are not converted into money amounts.</p>
+      </article>
+      <article class="panel">
+        <div class="section-heading"><div><p class="eyebrow">OBSERVED FREQUENCY</p><h2>Number distribution</h2></div><span class="subtle">0–9</span></div>
+        <div id="frequencyChart" class="bar-chart"><p class="empty-state">Load history to build the chart.</p></div>
+        <div class="legend"><span><i class="legend-dot"></i>Observed count</span><span class="subtle">Past data only</span></div>
+      </article>
+    </section>
+    <section class="two-col">
+      <article class="panel">
+        <div class="section-heading"><div><p class="eyebrow">HISTORY PATTERNS</p><h2>Size and color summary</h2></div></div>
+        <div class="summary-grid">
+          <div class="summary-card"><span class="muted">Big (5–9)</span><strong id="bigCount">0</strong><div class="progress"><i id="bigBar"></i></div></div>
+          <div class="summary-card"><span class="muted">Small (0–4)</span><strong id="smallCount">0</strong><div class="progress"><i id="smallBar"></i></div></div>
+          <div class="summary-card"><span class="muted">Red</span><strong id="redCount">0</strong><div class="progress"><i id="redBar"></i></div></div>
+          <div class="summary-card"><span class="muted">Green</span><strong id="greenCount">0</strong><div class="progress"><i id="greenBar"></i></div></div>
+          <div class="summary-card"><span class="muted">Violet</span><strong id="violetCount">0</strong><div class="progress"><i id="violetBar"></i></div></div>
+          <div class="summary-card"><span class="muted">Latest size streak</span><strong id="streakValue">—</strong><small id="streakSub">No data</small></div>
+        </div>
+        <div class="notice"><b>Read carefully:</b> frequency and streaks describe the imported history. They are not evidence that a particular next result is due.</div>
+      </article>
+      <article class="panel">
+        <div class="section-heading"><div><p class="eyebrow">CAPTURED DATA</p><h2>Data sources</h2></div></div>
+        <div id="sourceSummary" class="source-list"><div class="empty-state">No imported source data yet.</div></div>
+        <div class="divider"></div>
+        <h3 class="small-heading">Optional live collector</h3>
+        <p class="muted compact">A separate Chrome extension can collect responses from a supported site tab you open yourself. Export its JSON and import it here. This static GitHub Pages dashboard cannot intercept another site's authenticated requests directly.</p>
+      </article>
+    </section>
+    <section class="panel">
+      <div class="section-heading history-heading"><div><p class="eyebrow">RECENT RESULTS</p><h2>History table</h2></div><div class="table-tools"><input id="searchHistory" type="search" placeholder="Search issue or number"><select id="pageSize"><option value="25">25 rows</option><option value="50">50 rows</option><option value="100">100 rows</option></select></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Issue / period</th><th>Number</th><th>Size</th><th>Color</th><th>Draw time</th></tr></thead><tbody id="historyRows"><tr><td colspan="5" class="empty-cell">No live history yet. Keep the supported Wingo page open while the collector runs.</td></tr></tbody></table></div>
+      <div class="table-footer"><span id="tableInfo">0 records</span><div><button id="prevPage" class="button secondary small" disabled>Previous</button><button id="nextPage" class="button secondary small" disabled>Next</button></div></div>
+    </section>
+    <footer><span>Wingo Prediction Lab · GitHub Pages ready</span><span>Local browser analysis · No bets placed</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+  <script src="./firebase-sync.js"></script>
+</body>
+</html>

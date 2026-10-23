@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Wingo Prediction Lab \u2014 Live Collector",
+  "version": "2.0.0",
+  "description": "Polls the read-only Energy Panel API, captures history responses from an open Wingo tab, and syncs captured responses to Firebase Realtime Database.",
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.91club.com/*",
+    "https://*.kanpur91.com/*",
+    "https://draw.ar-lottery01.com/*",
+    "https://*.91clubapi.com/*",
+    "https://*.ar-lottery01.com/*",
+    "https://api.ar-lottery01.com/*",
+    "https://identitytoolkit.googleapis.com/*",
+    "https://securetoken.googleapis.com/*",
+    "https://*.firebasedatabase.app/*",
+    "https://*.firebaseio.com/*"
+  ],
+  "action": {
+    "default_title": "Wingo Prediction Lab",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.kanpur91.com/*",
+        "https://*.ar-lottery01.com/*",
+        "https://*.91club.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-hook.js"
+      ],
+      "matches": [
+        "https://*.kanpur91.com/*",
+        "https://*.ar-lottery01.com/*",
+        "https://*.91club.com/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  }
+}
